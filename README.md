@@ -236,11 +236,13 @@ I decided to return the entire room object rather than just returning the room I
 ### Part 2.2 — Is DELETE Idempotent?
 
 Yes, DELETE operations are idempotent. You make a DELETE request to remove a room from your system for the first time and the server sends you back 204 No Content to indicate that the room has been removed. If you then make the same DELETE request again, the server will respond with 404 Not Found because the requested room is no longer in the system due to having just been deleted. While the response code differs, the two DELETE requests leave the server in the same state; the requested room does not exist. This is considered standard REST idempotent behaviour.
+
 ---
 
 ### Part 3.1 — @Consumes and Content-Type Mismatch
 
 The `@Consumes(MediaType.APPLICATION_JSON)` tells JAX-RS to only accept requests that use a `Content-Type` of `application/json`. If you send a request with `text/plain` or another media type, JAX-RS will automatically reject the request at the time you send it and return a `415 Unsupported Media Type` before your method ever runs! You don't have to write any code to check whether the request is valid; JAX-RS will do that for you.
+
 ---
 
 ### Part 3.2 — @QueryParam vs Path Parameter for Filtering
@@ -258,11 +260,13 @@ The subresource locator pattern means that instead of managing all of the readin
 ### Part 5.2 — Why 422 Instead of 404 for a Missing roomId
 
 If a client attempts to create a sensor using an invalid roomId, the server should respond with 422 Unprocessable Entity, instead of a 404 Not Found. A 404 error indicates that the requested URL was not able to be found on the server, while the URL '/api/v1/sensors' is absolutely valid. The issue with this request is not the URL, but rather the request body, which contains an invalid roomId. A 422 Unprocessable Entity response would more accurately describe this error condition because the request body has been well-structured and interpreted by the server, but there is one or more invalid pieces of data within the body of the request.
+
 ---
 
 ### Part 5.4 — Security Risks of Exposing Stack Traces
 
 Exposing internal information, such as raw stack traces, when interfacing with API consumers is an issue of security. The names of all packages & classes within your application are visible to the consumer in the raw stack trace. If an attacker saw this they would learn how your application is built (i.e. its structure). This is as well as providing knowledge about any third-party libraries you are using and the version of them. This could provide an attacker with the ability to search for known vulnerabilities associated with any of the library versions. Additionally, an attacker may also obtain file paths from the server that are displayed within raw stack traces. Within this application project, the GlobalExceptionMapper catches any unhandled errors that occur and throws a generic message back to the consumer to prevent the above from being disclosed.
+
 ---
 
 ### Part 5.5 — Why Use Filters for Logging
